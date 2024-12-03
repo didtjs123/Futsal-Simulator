@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Players {
+  players_id Int      @id @default(autoincrement())
+  player_info Json    @db.Json
+  created_at DateTime
+  updated_at DateTime
+  Teams_Players Teams_Players[]
+  Player_invens_Players Player_invens_Players[]
+}
+
+model Accounts {
+  accounts_id Int      @id @default(autoincrement())
+  user_id     String   @unique
+  pwd         String   
+  nickname    String   @unique
+  created_at  DateTime
+  is_logged_in Boolean
+  last_login_at DateTime
+  Player_invens Player_invens[]
+  Teams        Teams[]
+}
+
+model Player_invens {
+  players_inven_id Int      @id @default(autoincrement())
+  accounts_id      Int      @unique
+  created_at       DateTime
+  updated_at       DateTime
+  Accounts          Accounts @relation(fields: [accounts_id], references: [accounts_id])
+  Player_invens_Players Player_invens_Players[]
+}
+
+model Teams {
+  teams_id    Int      @id @default(autoincrement())
+  accounts_id Int      @unique
+  teams_name  Int      @unique
+  Accounts     Accounts @relation(fields: [accounts_id], references: [accounts_id])
+  Teams_Players Teams_Players[]
+}
+
+model Teams_Players {
+  teams_players_id Int      @id @default(autoincrement())
+  teams_id         Int
+  players_id       Int
+  Teams             Teams   @relation(fields: [teams_id], references: [teams_id])
+  Players           Players @relation(fields: [players_id], references: [players_id])
+}
+
+model Player_invens_Players {
+  player_invens_players_id Int      @id @default(autoincrement())
+  player_invens_id         Int
+  players_id               Int
+  Player_invens             Player_invens @relation(fields: [player_invens_id], references: [players_inven_id])
+  Players                   Players       @relation(fields: [players_id], references: [players_id])
+}
