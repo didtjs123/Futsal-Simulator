@@ -24,7 +24,7 @@ model Accounts {
   user_id       String              @unique                      @map("user_id")
   pwd           String                                           @map("pwd")
   nickname      String              @unique                      @map("nickname")
-  cash          Int                 @default(100)                @map("cash") // 기본 캐시 값 설정
+  cash          Int                 @default(1000)                @map("cash") // 기본 캐시 값 설정
   created_at    DateTime            @default(now())              @map("created_at")
   is_logged_in  Boolean             @default(false)              @map("is_logged_in")
   last_login_at DateTime            @default(now())              @map("last_login_at")
