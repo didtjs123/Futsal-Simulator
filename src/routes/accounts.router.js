@@ -84,4 +84,15 @@ router.get('/accounts', authMiddleware, async (req, res, next) => {
   return res.status(200).json({ message: '사용자가 전체 조회됐습니다.' , data: user });
 });
 
+/** 로그아웃 API **/
+router.post('/log-out', async (req, res, next) => {
+  try {
+    // authorization 쿠키를 삭제하여 로그아웃 처리
+    res.clearCookie('authorization');
+    return res.status(200).json({ message: '로그아웃 성공' });
+  } catch (error) {
+    next(error); // 에러 핸들링 미들웨어로 전달
+  }
+});
+
 export default router;
