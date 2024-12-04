@@ -1,7 +1,9 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import errorHandlerMiddleware from "./middlewares/error-handler.middleware.js";
+import accountsRouter from "./routes/accounts.router.js";
 import cashRouter from "./routes/cash-router.js";
+import teamsRouter from "./routes/teams.router.js";
 
 //express 생성
 const app = express();
@@ -14,10 +16,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //쿠키 파서 전역 활성화
-app.use(cookieParser()); // 쿠키 파서 활성화
+app.use(cookieParser());
 
 //라우터 등록
-app.use("/api", [cashRouter]);
+app.use("/api", [accountsRouter, cashRouter, teamsRouter]);
 
 // //에러 처리 미들웨어
 // app.use(errorHandlerMiddleware);

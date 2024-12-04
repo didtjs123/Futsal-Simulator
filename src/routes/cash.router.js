@@ -21,20 +21,16 @@ router.patch("/cash", authenticateToken, async (req, res) => {
     // 캐시 충전
     const updatedUser = await prisma.accounts.update({
       where: { accounts_id: user.accounts_id }, // 인증된 사용자 ID 사용
-      data: {
-        cash: {
-          increment: amount, // 현재 캐쉬에 amount를 추가
-        },
+      cash: {
+        increment: amount, // 현재 캐쉬에 amount를 추가
       },
     });
 
     // 응답
     res.status(200).json({
       message: "캐시 충전이 완료되었습니다.",
-      data: {
-        "충전한 캐쉬": amount,
-        "보유 캐쉬": updatedUser.cash,
-      },
+      chargeCash: amount,
+      totalCash: updatedUser.cash,
     });
   } catch (error) {
     console.error(error);
@@ -63,7 +59,7 @@ router.get("/cash", authenticateToken, async (req, res) => {
     // 응답
     res.status(200).json({
       message: "현재 보유 캐시 조회 성공",
-      data: { "보유 캐쉬": account.cash },
+      totalCash: account.cash,
     });
   } catch (error) {
     console.error(error);
