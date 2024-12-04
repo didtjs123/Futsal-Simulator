@@ -11,7 +11,7 @@ model Players {
   players_id    Int      @id @default(autoincrement()) @map("players_id")
   name          String   @map("name") // 선수 이름
   stats         Json     @map("stats") // 선수 스탯 (속력, 골 결정력, 슛 파워 등)
-  rarity        String   @map("rarity") // 희귀도 (예: Common, Rare, Epic, Legendary)
+  rarity        String   @map("rarity") // 희귀도 (일반, 레어, 슈퍼레어
   created_at    DateTime @default(now()) @map("created_at")
   updated_at    DateTime @default(now()) @map("updated_at")
   Teams_Players Teams_Players[]
