@@ -10,6 +10,7 @@ const router = express.Router();
 
 /** 사용자 회원가입 API **/
 router.post('/sign-up', async (req, res, next) => {
+ try {
   const { user_id, pwd, nickname, } = req.body;
   const isExistUser = await prisma.accounts.findFirst({
     where: {
@@ -39,6 +40,10 @@ router.post('/sign-up', async (req, res, next) => {
   });
 
   return res.status(201).json({ message: '회원가입이 완료되었습니다.' , data: user });
+ }catch (error) {
+  console.error('Error during sign-up:', error); // 디버깅용 로그
+  return res.status(500).json({ message: '회원가입 중 오류가 발생했습니다.', error: error.message });
+ }
 });
 
 /** 로그인 API **/
