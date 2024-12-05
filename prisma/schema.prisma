@@ -45,13 +45,14 @@ model Player_invens {
 
 model Teams {
   teams_id      Int               @id @default(autoincrement()) @map("teams_id")
-  accounts_id   Int               @unique                      @map("accounts_id")
+  accounts_id   Int                                           @map("accounts_id")
   teams_name    String                                        @map("teams_name") // 팀 이름
   striker_id    Int?                                          @map("striker_id") // 스트라이커 선수 ID
   midfielder_id Int?                                          @map("midfielder_id") // 미드필더 선수 ID
   defender_id   Int?                                          @map("defender_id") // 디펜더 선수 ID
   Accounts      Accounts          @relation(fields: [accounts_id], references: [accounts_id])
   Teams_Players Teams_Players[]
+  @@unique([accounts_id, teams_name])
   @@map("teams") 
 }
 
