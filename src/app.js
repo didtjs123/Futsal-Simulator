@@ -5,6 +5,7 @@ import accountsRouter from "./routes/accounts.router.js";
 import cashRouter from "./routes/cash.router.js";
 import teamsRouter from "./routes/teams.router.js";
 import playersGacha from "./routes/players-gacha.router.js";
+import playersInven from "./routes/inven-players.router.js";
 
 //express 생성
 const app = express();
@@ -20,7 +21,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 //라우터 등록
-app.use("/api", [accountsRouter, cashRouter, teamsRouter, playersGacha]);
+app.use("/api", [
+  accountsRouter,
+  cashRouter,
+  teamsRouter,
+  playersGacha,
+  playersInven,
+]);
 
 // //에러 처리 미들웨어
 // app.use(errorHandlerMiddleware);
