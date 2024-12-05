@@ -77,7 +77,6 @@ router.get('/accounts', authMiddleware, async (req, res, next) => {
     select: {
       accounts_id: true,
       user_id  : true,
-      pwd : true,
     },
   });
 
