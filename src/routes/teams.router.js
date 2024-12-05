@@ -1,12 +1,12 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import { authenticateToken } from "../middlewares/auth.middleware.js";
+import authMiddleware from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
 // 팀 편성 API
-router.patch("/teams/:teamName", authenticateToken, async (req, res) => {
+router.patch("/teams/:teamName", authMiddleware, async (req, res) => {
   const user = req.accounts; // 인증된 사용자 정보 가져오기
   const { teamName } = req.params; // URL 파라미터에서 팀 이름 가져오기
   const { striker_id, midfielder_id, defender_id } = req.body; // 요청 바디에서 스트라이커, 미드필더, 디펜더 ID 가져오기
@@ -86,7 +86,7 @@ router.patch("/teams/:teamName", authenticateToken, async (req, res) => {
 });
 
 // 팀 상세 조회 API
-router.get("/teams/:teamName", authenticateToken, async (req, res) => {
+router.get("/teams/:teamName", authMiddleware, async (req, res) => {
   const user = req.accounts; // 인증된 사용자 정보 가져오기
   const { teamName } = req.params; // URL 파라미터에서 팀 이름 가져오기
 
@@ -122,6 +122,51 @@ router.get("/teams/:teamName", authenticateToken, async (req, res) => {
     console.error(error);
     res.status(500).json({
       errorMessage: "팀 상세 조회 중 오류가 발생했습니다.",
+    });
+  }
+});
+
+// 팀 전체 조회 API
+router.get("/teams", authMiddleware, async (req, res) => {
+  const user = req.accounts; // 인증된 사용자 정보 가져오기
+
+  try {
+    // 해당 사용자가 소유한 모든 팀 검색
+    const teams = await prisma.teams.findMany({
+      where: {
+        accounts_id: user.accounts_id,
+      },
+      include: {
+        Teams_Players: {
+          include: {
+            Players: true,
+          },
+        },
+      },
+    });
+
+    if (!teams || teams.length === 0) {
+      return res.status(404).json({ message: "보유한 팀이 없습니다." });
+    }
+
+    // 팀별 선수 정보 추출
+    const teamDetails = teams.map((team) => {
+      const players = team.Teams_Players.map((p) => p.Players);
+      return {
+        team_name: team.teams_name,
+        playersInfo: players,
+      };
+    });
+
+    // 응답
+    res.status(200).json({
+      message: "보유 팀 목록 조회가 완료되었습니다.",
+      teams: teamDetails,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      errorMessage: "팀 전체 조회 중 오류가 발생했습니다.",
     });
   }
 });

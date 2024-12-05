@@ -2,8 +2,9 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import errorHandlerMiddleware from "./middlewares/error-handler.middleware.js";
 import accountsRouter from "./routes/accounts.router.js";
-import cashRouter from "./routes/cash-router.js";
+import cashRouter from "./routes/cash.router.js";
 import teamsRouter from "./routes/teams.router.js";
+import playersGacha from "./routes/players-gacha.router.js";
 
 //express 생성
 const app = express();
@@ -19,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 //라우터 등록
-app.use("/api", [accountsRouter, cashRouter, teamsRouter]);
+app.use("/api", [accountsRouter, cashRouter, teamsRouter, playersGacha]);
 
 // //에러 처리 미들웨어
 // app.use(errorHandlerMiddleware);

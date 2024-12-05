@@ -1,11 +1,12 @@
 // src/routes/accounts.router.js
 
 import express from "express";
-import { prisma } from "../utils/prisma/index.js";
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authMiddleware from "../middlewares/auth.middleware.js";
 
+const prisma = new PrismaClient();
 const router = express.Router();
 
 /** 사용자 회원가입 API **/

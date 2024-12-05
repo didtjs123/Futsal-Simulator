@@ -1,17 +1,17 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import { authenticateToken } from "../middlewares/auth.middleware.js";
+import authMiddleware from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
 // 캐시 충전 API
-router.patch("/cash", authenticateToken, async (req, res) => {
+router.patch("/cash", authMiddleware, async (req, res) => {
   const { amount } = req.body; // 요청에서 충전 금액 가져오기
   const user = req.accounts; // 인증 미들웨어에서 저장된 사용자 정보
-
+  const parsedAmount = parseInt(amount, 10);
   // amount 유효성 검사
-  if (!amount || amount <= 0) {
+  if (!parsedAmount || parsedAmount <= 0) {
     return res
       .status(400)
       .json({ errorMessage: "유효하지 않은 데이터입니다." });
@@ -21,15 +21,17 @@ router.patch("/cash", authenticateToken, async (req, res) => {
     // 캐시 충전
     const updatedUser = await prisma.accounts.update({
       where: { accounts_id: user.accounts_id }, // 인증된 사용자 ID 사용
-      cash: {
-        increment: amount, // 현재 캐쉬에 amount를 추가
+      data: {
+        cash: {
+          increment: parsedAmount, // 현재 캐쉬에 amount를 추가
+        },
       },
     });
 
     // 응답
     res.status(200).json({
       message: "캐시 충전이 완료되었습니다.",
-      chargeCash: amount,
+      chargeCash: parsedAmount,
       totalCash: updatedUser.cash,
     });
   } catch (error) {
@@ -41,7 +43,7 @@ router.patch("/cash", authenticateToken, async (req, res) => {
 });
 
 // 보유 캐시 조회 API
-router.get("/cash", authenticateToken, async (req, res) => {
+router.get("/cash", authMiddleware, async (req, res) => {
   const user = req.accounts; // 인증 미들웨어에서 저장된 사용자 정보
 
   try {
@@ -58,7 +60,7 @@ router.get("/cash", authenticateToken, async (req, res) => {
 
     // 응답
     res.status(200).json({
-      message: "현재 보유 캐시 조회 성공",
+      message: "보유 캐시 조회 성공",
       totalCash: account.cash,
     });
   } catch (error) {
