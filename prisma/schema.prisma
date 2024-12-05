@@ -11,7 +11,7 @@ model Players {
   players_id    Int      @id @default(autoincrement()) @map("players_id")
   name          String   @map("name") // 선수 이름
   stats         Json     @map("stats") // 선수 스탯 (속력, 골 결정력, 슛 파워 등)
-  rarity        String   @map("rarity") // 희귀도 (일반, 레어, 슈퍼레어
+  rarity        String   @map("rarity") // 희귀도 (일반, 레어, 슈퍼레어)
   created_at    DateTime @default(now()) @map("created_at")
   updated_at    DateTime @default(now()) @map("updated_at")
   Teams_Players Teams_Players[]
@@ -46,7 +46,10 @@ model Player_invens {
 model Teams {
   teams_id      Int               @id @default(autoincrement()) @map("teams_id")
   accounts_id   Int               @unique                      @map("accounts_id")
-  teams_name    String            @map("teams_name") // 팀 이름
+  teams_name    String                                        @map("teams_name") // 팀 이름
+  striker_id    Int?                                          @map("striker_id") // 스트라이커 선수 ID
+  midfielder_id Int?                                          @map("midfielder_id") // 미드필더 선수 ID
+  defender_id   Int?                                          @map("defender_id") // 디펜더 선수 ID
   Accounts      Accounts          @relation(fields: [accounts_id], references: [accounts_id])
   Teams_Players Teams_Players[]
   @@map("teams") 
