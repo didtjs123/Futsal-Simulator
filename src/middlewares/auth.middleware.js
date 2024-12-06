@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { prisma } from "../utils/prisma/index.js";
 
 export default async function (req, res, next) {
   try {

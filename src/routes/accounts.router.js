@@ -1,12 +1,11 @@
 // src/routes/accounts.router.js
 
 import express from "express";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../utils/prisma/index.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authMiddleware from "../middlewares/auth.middleware.js";
 
-const prisma = new PrismaClient();
 const router = express.Router();
 
 /** 사용자 회원가입 API **/
@@ -51,10 +50,12 @@ router.post("/sign-up", async (req, res, next) => {
       .json({ message: "회원가입이 완료되었습니다.", data: user });
   } catch (error) {
     console.error("Error during sign-up:", error); // 디버깅용 로그
-    return res.status(500).json({
-      message: "회원가입 중 오류가 발생했습니다.",
-      error: error.message,
-    });
+    return res
+      .status(500)
+      .json({
+        message: "회원가입 중 오류가 발생했습니다.",
+        error: error.message,
+      });
   }
 });
 
@@ -88,13 +89,23 @@ router.get("/accounts", authMiddleware, async (req, res, next) => {
     select: {
       accounts_id: true,
       user_id: true,
-      pwd: true,
     },
   });
 
   return res
     .status(200)
     .json({ message: "사용자가 전체 조회됐습니다.", data: user });
+});
+
+/** 로그아웃 API **/
+router.post("/log-out", async (req, res, next) => {
+  try {
+    // authorization 쿠키를 삭제하여 로그아웃 처리
+    res.clearCookie("authorization");
+    return res.status(200).json({ message: "로그아웃 성공" });
+  } catch (error) {
+    next(error); // 에러 핸들링 미들웨어로 전달
+  }
 });
 
 export default router;
