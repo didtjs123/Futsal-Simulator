@@ -31,7 +31,13 @@ router.post('/sign-up', async (req, res, next) => {
       pwd: hashedPassword,
       nickname: nickname,
       Teams: {
-        create: [{ teams_name: '내스쿼드' }]
+         create: [
+            { teams_name: "A" },
+            { teams_name: "B" },
+            { teams_name: "C" },
+            { teams_name: "D" },
+            { teams_name: "E" },
+          ]
       },
       Player_invens: {
         create: [{ }]
