@@ -177,7 +177,7 @@ router.get("/teams/:teamName", authMiddleware, async (req, res) => {
   }
 });
 
-// 팀 전체 조회 API
+// 내 팀 전체 조회 API
 router.get("/teams", authMiddleware, async (req, res) => {
   const user = req.accounts; // 인증된 사용자 정보 가져오기
 
@@ -218,6 +218,62 @@ router.get("/teams", authMiddleware, async (req, res) => {
     // 응답
     res.status(200).json({
       message: "보유 팀 목록 조회가 완료되었습니다.",
+      teams: teamDetails,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      errorMessage: "팀 전체 조회 중 오류가 발생했습니다.",
+    });
+  }
+});
+
+// 계정 전체 팀 조회 API
+router.get("/all-teams", async (req, res) => {
+  try {
+    // 모든 계정의 팀 검색
+    const teams = await prisma.teams.findMany({
+      include: {
+        Accounts: {
+          select: {
+            nickname: true,
+          },
+        },
+        Teams_Players: {
+          include: {
+            Players: {
+              select: {
+                rarity: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!teams || teams.length === 0) {
+      return res.status(404).json({ message: "조회할 팀이 없습니다." });
+    }
+
+    // 팀 정보 추출 (닉네임 포함)
+    const teamDetails = teams.map((team) => {
+      const players = team.Teams_Players.map((p) => {
+        return {
+          rarity: p.Players.rarity,
+          name: p.Players.name,
+        };
+      });
+      return {
+        team_id: team.teams_id,
+        nickname: team.Accounts.nickname,
+        playersInfo: players,
+      };
+    });
+
+    // 응답
+    res.status(200).json({
+      message: "모든 팀 조회가 완료되었습니다.",
       teams: teamDetails,
     });
   } catch (error) {

@@ -92,7 +92,7 @@ router.post("/players/gacha", authMiddleware, async (req, res) => {
       players: playersInfo,
     });
   } catch (error) {
-    console.error("Error during player gacha:", error);
+    console.error(error);
     res.status(500).json({ message: "선수 뽑기 중 오류가 발생했습니다." });
   }
 });
