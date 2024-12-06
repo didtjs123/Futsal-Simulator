@@ -14,15 +14,8 @@ model Players {
   rarity        String   @map("rarity") // 희귀도 (일반, 레어, 슈퍼레어)
   created_at    DateTime @default(now()) @map("created_at")
   updated_at    DateTime @default(now()) @map("updated_at")
-  players_id    Int      @id @default(autoincrement()) @map("players_id")
-  name          String   @map("name") // 선수 이름
-  stats         Json     @map("stats") // 선수 스탯 (속력, 골 결정력, 슛 파워 등)
-  rarity        String   @map("rarity") // 희귀도 (일반, 레어, 슈퍼레어
-  created_at    DateTime @default(now()) @map("created_at")
-  updated_at    DateTime @default(now()) @map("updated_at")
   Teams_Players Teams_Players[]
   Player_invens_Players Player_invens_Players[]
-  @@map("players")
   @@map("players")
 }
 
@@ -35,17 +28,7 @@ model Accounts {
   created_at    DateTime            @default(now())              @map("created_at")
   is_logged_in  Boolean             @default(false)              @map("is_logged_in")
   last_login_at DateTime            @default(now())              @map("last_login_at")
-  accounts_id   Int                 @id @default(autoincrement()) @map("accounts_id")
-  user_id       String              @unique                      @map("user_id")
-  pwd           String                                           @map("pwd")
-  nickname      String              @unique                      @map("nickname")
-  cash          Int                 @default(1000)                @map("cash") // 기본 캐시 값 설정
-  created_at    DateTime            @default(now())              @map("created_at")
-  is_logged_in  Boolean             @default(false)              @map("is_logged_in")
-  last_login_at DateTime            @default(now())              @map("last_login_at")
   Player_invens Player_invens[]
-  Teams         Teams[]
-  @@map("accounts") 
   Teams         Teams[]
   @@map("accounts") 
 }
@@ -56,26 +39,20 @@ model Player_invens {
   created_at            DateTime                 @default(now())              @map("created_at")
   updated_at            DateTime                 @default(now())              @map("updated_at")
   Accounts              Accounts                 @relation(fields: [accounts_id], references: [accounts_id])
-  players_inven_id      Int                      @id @default(autoincrement()) @map("players_inven_id")
-  accounts_id           Int                      @unique                      @map("accounts_id")
-  created_at            DateTime                 @default(now())              @map("created_at")
-  updated_at            DateTime                 @default(now())              @map("updated_at")
-  Accounts              Accounts                 @relation(fields: [accounts_id], references: [accounts_id])
   Player_invens_Players Player_invens_Players[]
-  @@map("player_invens") 
   @@map("player_invens") 
 }
 
 model Teams {
   teams_id      Int               @id @default(autoincrement()) @map("teams_id")
-  accounts_id   Int               @unique                      @map("accounts_id")
+  accounts_id   Int                                           @map("accounts_id")
   teams_name    String                                        @map("teams_name") // 팀 이름
   striker_id    Int?                                          @map("striker_id") // 스트라이커 선수 ID
   midfielder_id Int?                                          @map("midfielder_id") // 미드필더 선수 ID
   defender_id   Int?                                          @map("defender_id") // 디펜더 선수 ID
   Accounts      Accounts          @relation(fields: [accounts_id], references: [accounts_id])
   Teams_Players Teams_Players[]
-  @@map("teams") 
+  @@unique([accounts_id, teams_name])
   @@map("teams") 
 }
 
@@ -86,21 +63,9 @@ model Teams_Players {
   Teams             Teams     @relation(fields: [teams_id], references: [teams_id])
   Players           Players   @relation(fields: [players_id], references: [players_id])
   @@map("teams_players")
-  teams_players_id  Int       @id @default(autoincrement()) @map("teams_players_id")
-  teams_id          Int                                       @map("teams_id")
-  players_id        Int                                       @map("players_id")
-  Teams             Teams     @relation(fields: [teams_id], references: [teams_id])
-  Players           Players   @relation(fields: [players_id], references: [players_id])
-  @@map("teams_players")
 }
 
 model Player_invens_Players {
-  player_invens_players_id  Int                @id @default(autoincrement()) @map("player_invens_players_id")
-  player_invens_id          Int                                          @map("player_invens_id")
-  players_id                Int                                          @map("players_id")
-  Player_invens             Player_invens      @relation(fields: [player_invens_id], references: [players_inven_id])
-  Players                   Players            @relation(fields: [players_id], references: [players_id])
-  @@map("player_invens_players") 
   player_invens_players_id  Int                @id @default(autoincrement()) @map("player_invens_players_id")
   player_invens_id          Int                                          @map("player_invens_id")
   players_id                Int                                          @map("players_id")
