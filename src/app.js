@@ -6,6 +6,7 @@ import cashRouter from "./routes/cash.router.js";
 import teamsRouter from "./routes/teams.router.js";
 import playersGacha from "./routes/players-gacha.router.js";
 import playersInven from "./routes/inven-players.router.js";
+import players from "./routes/players.router.js";
 
 //express 생성
 const app = express();
@@ -27,6 +28,7 @@ app.use("/api", [
   teamsRouter,
   playersGacha,
   playersInven,
+  players,
 ]);
 
 // //에러 처리 미들웨어
