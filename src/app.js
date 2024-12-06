@@ -9,6 +9,7 @@ import playerDataRouter from "./routes/player.router.js";
 import { config } from "dotenv";
 import playersInven from "./routes/inven-players.router.js";
 import players from "./routes/players.router.js";
+import gameFutsal from "./routes/game.router.js";
 
 config();
 
@@ -34,6 +35,7 @@ app.use("/api", [
   playersInven,
   players,
   playerDataRouter,
+  gameFutsal,
 ]);
 
 // //에러 처리 미들웨어
