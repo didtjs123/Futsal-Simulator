@@ -5,8 +5,12 @@ import accountsRouter from "./routes/accounts.router.js";
 import cashRouter from "./routes/cash.router.js";
 import teamsRouter from "./routes/teams.router.js";
 import playersGacha from "./routes/players-gacha.router.js";
+import playerDataRouter from "./routes/player.router.js";
+import { config } from "dotenv";
 import playersInven from "./routes/inven-players.router.js";
 import players from "./routes/players.router.js";
+
+config();
 
 //express 생성
 const app = express();
@@ -29,6 +33,7 @@ app.use("/api", [
   playersGacha,
   playersInven,
   players,
+  playerDataRouter,
 ]);
 
 // //에러 처리 미들웨어
